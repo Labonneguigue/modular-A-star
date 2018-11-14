@@ -3,32 +3,49 @@
 
 #include <cmath>
 #include "modular_a_star.h"
+#include "utl.h"
 
 template<typename stateT>
 class Map : public pp::IMap<stateT>
 {
 public:
 
+    Map(std::vector<std::vector<int> >& grid)
+        : mGrid(grid)
+    {}
+
     virtual ~Map() {};
 
     virtual bool isAccessible(stateT state) const override
     {
-
-        return true;
+        return (state.getX() >= 0 && state.getX() < mGrid.size()
+             && state.getY() >= 0 && state.getY() < mGrid[0].size());
     }
 
-    virtual bool hasReached(stateT current, stateT goal) const override
-    {
-        return true;
-    }
+private:
+
+    std::vector<std::vector<int> >& mGrid;
 };
 
 class MazeState : public pp::IState
 {
 public:
 
-    virtual int getX() const override { return x;};
-    virtual int getY() const override { return x;};
+    MazeState( double x = 0.0
+             , double y = 0.0
+             , double theta = 0.0
+             , int g = 0, int f = 0)
+        : x(x)
+        , y(y)
+        , theta(theta)
+        , g(g)
+        , f(f)
+    {}
+
+    int idx(double position) const { return static_cast<int>(floor(position)); };
+
+    virtual int getX() const override { return idx(x);};
+    virtual int getY() const override { return idx(x);};
     virtual int getIteration() const override { return g;};
     virtual int getHeuristic() const override { return f;};
 
@@ -39,16 +56,38 @@ public:
      */
     virtual int getInternalState() const override
     {
-        double new_theta = fmod((theta + 2 * M_PI),(2 * M_PI));
-        int stack_number = (int)(round(new_theta * cNumberThetaCells / (2*M_PI))) % cNumberThetaCells;
+        double new_theta = fmod((theta + utl::twoPi<double>()),(utl::twoPi<double>()));
+        int stack_number = static_cast<int>(round(new_theta * cNumberThetaCells / (utl::twoPi<double>()))) % cNumberThetaCells;
         return stack_number;
     }
 
-    virtual std::vector<IState> expand(IState& goal) const override
+    std::vector<MazeState> expand(const IState& goal) const
     {
-        std::vector<IState> nextStates;
+        std::vector<MazeState> nextStates;
 
+        const int newG = g+1;
+
+        for (double delta = -cMaximumSteering; delta < cMaximumSteering+1.0 ; delta+=cDeltaSteering)
+        {
+            const double deltaRad = utl::deg2rad(delta);
+            const double omega = cSpeed / cVehicleLength * tan(deltaRad);
+            double newTheta = theta + omega;
+            newTheta = utl::warp2Pi(newTheta);
+            const double newX = x + cSpeed * cos(theta);
+            const double newY= y + cSpeed * sin(theta);
+            const int newF = heuristic(newX, newY, goal);
+
+            std::cout << "x: " << newX << "   y: " << newY << "\n";
+            std::cout << "theta: " << newTheta << "\n";
+
+            nextStates.emplace_back(MazeState(newX, newY, newTheta, newG, newF));
+        }
         return nextStates;
+    }
+
+    virtual bool hasReached(const IState& goal) const override
+    {
+        return (getX() == goal.getX() && getY() == goal.getY());
     }
 
     /** Comparator for sorting the state in the A* algorithm
@@ -58,19 +97,30 @@ public:
         return (g + f) < (rhs.getIteration() + rhs.getHeuristic());
     }
 
+private:
+
+    int heuristic(int x, int y, const IState& goal) const
+    {
+        return (std::abs(goal.getX()-x) + std::abs(goal.getY()-y));
+    }
+
 public:
 
     static constexpr int cNumberThetaCells = 90;
 
 private:
 
+    static constexpr double cMaximumSteering = 35.0;
+    static constexpr double cDeltaSteering = 5.0;
     static constexpr double cSpeed = 1.45;
+    static constexpr double cVehicleLength = 0.5;
+
+    double x;
+    double y;
+    double theta;
 
     int g; // iteration
     int f; // heuristic
-    int x;
-    int y;
-    double theta;
 
 };
 

@@ -20,7 +20,6 @@ public:
 
     virtual bool isAccessible(stateT state) const = 0;
 
-    virtual bool hasReached(stateT current, stateT goal) const = 0;
 };
 
 /** Interface defining what a state type should implement to be
@@ -42,7 +41,9 @@ public:
 
     virtual int getInternalState() const = 0;
 
-    virtual std::vector<IState> expand(IState& goal) const = 0;
+    //virtual std::vector<IState> expand(const IState& goal) const = 0;
+
+    virtual bool hasReached(const IState& goal) const = 0;
 
     virtual bool operator<(const IState& rhs) const = 0;
 };
@@ -71,9 +72,9 @@ public:
      * @return Bool if final state has been reached, False otherwise
      */
     bool search( std::vector<std::vector<int> >& grid
-                , std::vector<std::vector<std::vector<stateT> > >& pathToGoal
-                , stateT start
-                , stateT& goal )
+               , std::vector<std::vector<std::vector<stateT> > >& pathToGoal
+               , stateT start
+               , stateT& goal )
     {
         // Tri dimensional vector for storing all spacial positions on the grid
         // as well as the states within each positions that have been visited and closed.
@@ -103,7 +104,7 @@ public:
             currentState = opened[0];
             opened.erase(opened.begin());
 
-            if (mMap.hasReached(currentState, goal))
+            if (currentState.hasReached(goal))
             {
                 std::cout << "Found path to goal in " << closedCount << " expansions.\n";
                 // Return the final state by replacing the goal input argument
@@ -147,7 +148,7 @@ public:
         stateT current = from[internalState][end.getX()][end.getY()];
         internalState = current.getInternalState();
 
-        while (mMap.hasReached(current, start))
+        while (!current.hasReached(start))
         {
             path.push_back(current);
             current = from[internalState][current.getX()][current.getY()];
@@ -176,3 +177,34 @@ private:
 } // END: pp
 
 #endif
+
+
+
+
+// int g = state.g;
+//   double x = state.x;
+//   double y = state.y;
+//   double theta = state.theta;
+
+//   int g2 = g+1;
+//   vector<HBF::maze_s> next_states;
+//   for(double delta_i = -35; delta_i < 40; delta_i+=5)
+//   {
+//     double delta = M_PI / 180.0 * delta_i;
+//     double omega = SPEED / LENGTH * tan(delta);
+//     double theta2 = theta + omega;
+//     if(theta2 < 0)
+//     {
+//         theta2 += 2*M_PI;
+//     }
+//     double x2 = x + SPEED * cos(theta);
+//     double y2 = y + SPEED * sin(theta);
+//     HBF::maze_s state2;
+//     state2.g = g2;
+//     state2.f = heuristic(idx(x2), idx(y2), goal);
+//     state2.x = x2;
+//     state2.y = y2;
+//     state2.theta = theta2;
+//     next_states.push_back(state2);
+
+//   }
