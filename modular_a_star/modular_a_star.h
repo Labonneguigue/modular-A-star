@@ -79,11 +79,11 @@ public:
         // Tri dimensional vector for storing all spacial positions on the grid
         // as well as the states within each positions that have been visited and closed.
         mClosed = std::vector<std::vector<std::vector<int> > >( states , std::vector<std::vector<int> >(grid[0].size()
-                                                                     , std::vector<int>(grid.size())));
+                                                                       , std::vector<int>(grid.size())));
 
         // Tri dimensional vector for storing all states to be expanded.
         pathToGoal = std::vector<std::vector<std::vector<stateT> > >( states , std::vector<std::vector<stateT> >(grid[0].size()
-                                                                           , std::vector<stateT>(grid.size())));
+                                                                             , std::vector<stateT>(grid.size())));
 
         // Set the first state as visited
         mClosed[start.getInternalState()][start.getX()][start.getY()] = 1;
@@ -118,7 +118,7 @@ public:
             for(auto& next : nextStates)
             {
                 // If next state is not accessible, it is not added to the next possible states to visit
-                if (mMap.isAccessible(next)) continue;
+                if (!mMap.isAccessible(next)) continue;
 
                 if ( !mClosed[next.getInternalState()][next.getX()][next.getY()]
                      && !grid[next.getX()][next.getY()])
@@ -177,34 +177,3 @@ private:
 } // END: pp
 
 #endif
-
-
-
-
-// int g = state.g;
-//   double x = state.x;
-//   double y = state.y;
-//   double theta = state.theta;
-
-//   int g2 = g+1;
-//   vector<HBF::maze_s> next_states;
-//   for(double delta_i = -35; delta_i < 40; delta_i+=5)
-//   {
-//     double delta = M_PI / 180.0 * delta_i;
-//     double omega = SPEED / LENGTH * tan(delta);
-//     double theta2 = theta + omega;
-//     if(theta2 < 0)
-//     {
-//         theta2 += 2*M_PI;
-//     }
-//     double x2 = x + SPEED * cos(theta);
-//     double y2 = y + SPEED * sin(theta);
-//     HBF::maze_s state2;
-//     state2.g = g2;
-//     state2.f = heuristic(idx(x2), idx(y2), goal);
-//     state2.x = x2;
-//     state2.y = y2;
-//     state2.theta = theta2;
-//     next_states.push_back(state2);
-
-//   }

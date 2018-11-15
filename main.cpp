@@ -61,18 +61,20 @@ int main() {
         {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
     };
 
-    Map<MazeState> map(maze1);
+    std::vector<std::vector<int> > maze = maze2;
+
+    Map<MazeState> map(maze);
     pp::A_Star<MazeState, MazeState::cNumberThetaCells> AStar(map);
 
     MazeState start(0.0, 0.0, 0.0);
-    MazeState end(maze1.size()-1, maze1[0].size()-1, 0.0);
+    MazeState end(maze.size()-1, maze[0].size()-1, 0.0);
 
     std::vector<std::vector<std::vector<MazeState> > > pathToGoal;
 
     std::cout << "Finding path through grid:\n";
-    printGrid(maze1);
+    printGrid(maze);
 
-    AStar.search(maze1, pathToGoal, start, end);
+    AStar.search(maze, pathToGoal, start, end);
 
     std::vector<MazeState> path = AStar.reconstructPath(pathToGoal, start, end);
 
@@ -81,10 +83,10 @@ int main() {
         std::cout << "### Step: " << state->getIteration() << "###\n";
         std::cout << "x: " << state->getX() << "   y: " << state->getY() << "\n";
         std::cout << "theta: " << state->getInternalState() << "\n";
-        maze1[state->getX()][state->getY()] = 3;
+        maze[state->getX()][state->getY()] = 3;
     }
 
-    printGrid(maze1);
+    printGrid(maze);
 
     return 0;
 

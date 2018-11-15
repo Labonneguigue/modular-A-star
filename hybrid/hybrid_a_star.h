@@ -45,7 +45,7 @@ public:
     int idx(double position) const { return static_cast<int>(floor(position)); };
 
     virtual int getX() const override { return idx(x);};
-    virtual int getY() const override { return idx(x);};
+    virtual int getY() const override { return idx(y);};
     virtual int getIteration() const override { return g;};
     virtual int getHeuristic() const override { return f;};
 
@@ -76,9 +76,6 @@ public:
             const double newX = x + cSpeed * cos(theta);
             const double newY= y + cSpeed * sin(theta);
             const int newF = heuristic(newX, newY, goal);
-
-            std::cout << "x: " << newX << "   y: " << newY << "\n";
-            std::cout << "theta: " << newTheta << "\n";
 
             nextStates.emplace_back(MazeState(newX, newY, newTheta, newG, newF));
         }
