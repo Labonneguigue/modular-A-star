@@ -125,7 +125,7 @@ public:
                 {
                     opened.push_back(next);
                     ++mClosed[next.getInternalState()][next.getX()][next.getY()];
-                    pathToGoal[next.getInternalState()][next.getX()][next.getY()] = next;
+                    pathToGoal[next.getInternalState()][next.getX()][next.getY()] = currentState;
                     ++closedCount;
                 }
             }
@@ -148,8 +148,10 @@ public:
         stateT current = from[internalState][end.getX()][end.getY()];
         internalState = current.getInternalState();
 
-        while (!current.hasReached(start))
+        int i = 0;
+        while (!current.hasReached(start) && i < 2000)
         {
+            i++;
             path.push_back(current);
             current = from[internalState][current.getX()][current.getY()];
             internalState = current.getInternalState();
