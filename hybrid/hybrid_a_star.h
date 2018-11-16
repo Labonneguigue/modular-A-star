@@ -5,6 +5,9 @@
 #include "modular_a_star.h"
 #include "utl.h"
 
+/**
+ * Map class defines the behavior of the underlying physical map
+ */
 template<typename stateT>
 class Map : public pp::IMap<stateT>
 {
@@ -16,6 +19,10 @@ public:
 
     virtual ~Map() {};
 
+    /** Dictates whether a location on the map is accessible or not
+     *
+     * @param[in] state State at potential destination location
+     */
     virtual bool isAccessible(stateT state) const override
     {
         return (state.getX() >= 0 && state.getX() < mGrid.size()
@@ -24,9 +31,12 @@ public:
 
 private:
 
-    std::vector<std::vector<int> >& mGrid;
+    std::vector<std::vector<int> >& mGrid; ///< Reference to the grid representing the map itself.
 };
 
+/**
+ * Class defining the state of the moving object through the maze.
+ */
 class MazeState : public pp::IState
 {
 public:
@@ -61,6 +71,11 @@ public:
         return stack_number;
     }
 
+    /**
+     * Creates all possible next states from the current state
+     *
+     * @param[in] goal Goal state used to determine the heuristic
+     */
     std::vector<MazeState> expand(const IState& goal) const
     {
         std::vector<MazeState> nextStates;
@@ -109,7 +124,7 @@ private:
 
     static constexpr double cMaximumSteering = 35.0;
     static constexpr double cDeltaSteering = 5.0;
-    static constexpr double cSpeed = 1.45;
+    static constexpr double cSpeed = 1.4;
     static constexpr double cVehicleLength = 0.5;
 
     double x;

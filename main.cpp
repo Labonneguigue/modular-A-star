@@ -61,7 +61,26 @@ int main() {
         {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
     };
 
-    std::vector<std::vector<int> > maze = maze2;
+    std::vector<std::vector<int> > maze3 = {
+        {_,X,X,_,_,_,_,_,_,_,X,X,_,_,_,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,_,_,_,_,_,_,X,X,_,_,_,_,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,_,_,_,_,_,X,X,_,_,_,_,_,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,_,_,_,_,X,X,_,_,_,X,X,X,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,_,_,_,X,X,_,_,_,X,X,X,_,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,_,_,X,X,_,_,_,X,X,X,_,_,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,_,X,X,_,_,_,X,X,X,_,_,_,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,X,X,_,_,_,X,X,X,_,_,_,_,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,X,_,_,_,X,X,X,_,_,_,_,_,_,_,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,X,_,_,_,X,X,X,_,_,X,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,X,_,_,_,X,X,X,_,_,X,X,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,_,_,_,X,X,X,_,_,X,X,X,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,_,_,X,X,X,_,_,X,X,X,X,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_},
+        {_,_,X,X,X,_,_,X,X,X,X,X,X,X,X,X,X,X,X,_,_,_,_,_,_,_,X,_,_,_,_,_,_},
+        {_,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,X,X,X,_,_,_,_,_},
+        {X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,X,X,X,X,X,_,_,_,_},
+    };
+
+    std::vector<std::vector<int> > maze = maze3;
 
     Map<MazeState> map(maze);
     pp::A_Star<MazeState, MazeState::cNumberThetaCells> AStar(map);
@@ -74,20 +93,20 @@ int main() {
     std::cout << "Finding path through grid:\n";
     printGrid(maze);
 
-    AStar.search(maze, pathToGoal, start, end);
-
-    std::vector<MazeState> path = AStar.reconstructPath(pathToGoal, start, end);
-
-    for (auto state = path.begin(); state != path.end(); ++state)
+    if( AStar.search(maze, pathToGoal, start, end) )
     {
-        std::cout << "### Step: " << state->getIteration() << "###\n";
-        std::cout << "x: " << state->getX() << "   y: " << state->getY() << "\n";
-        std::cout << "theta: " << state->getInternalState() << "\n";
-        maze[state->getX()][state->getY()] = 3;
+        std::vector<MazeState> path = AStar.reconstructPath(pathToGoal, start, end);
+
+        for (auto state = path.rbegin(); state != path.rend(); ++state)
+        {
+            std::cout << "### Step: " << state->getIteration() << "###\n";
+            std::cout << "x: " << state->getX() << "   y: " << state->getY() << "\n";
+            std::cout << "theta: " << state->getInternalState() << "\n";
+            maze[state->getX()][state->getY()] = 3;
+        }
+
+        printGrid(maze);
     }
 
-    printGrid(maze);
-
     return 0;
-
 }

@@ -41,8 +41,6 @@ public:
 
     virtual int getInternalState() const = 0;
 
-    //virtual std::vector<IState> expand(const IState& goal) const = 0;
-
     virtual bool hasReached(const IState& goal) const = 0;
 
     virtual bool operator<(const IState& rhs) const = 0;
@@ -148,14 +146,13 @@ public:
         stateT current = from[internalState][end.getX()][end.getY()];
         internalState = current.getInternalState();
 
-        int i = 0;
-        while (!current.hasReached(start) && i < 2000)
+        while (!current.hasReached(start))
         {
-            i++;
             path.push_back(current);
             current = from[internalState][current.getX()][current.getY()];
             internalState = current.getInternalState();
         }
+        path.push_back(current);
 
         return path;
     }
@@ -172,7 +169,7 @@ private:
 
     const IMap<stateT>& mMap; ///< Map object able to tell wheather the state is valid or not and signal when the goal has been reached.
 
-    std::vector<std::vector<std::vector<int> > > mClosed;
+    std::vector<std::vector<std::vector<int> > > mClosed; ///< Set of all closed states to prevent revisiting them.
 
 };
 
