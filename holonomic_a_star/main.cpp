@@ -3,8 +3,8 @@
 #include <math.h>
 #include <vector>
 
-#include "hybrid_a_star.h"
 #include "modular_a_star.h"
+#include "state.h"
 #include "map.h"
 
 void printGrid(const std::vector<std::vector<int> >& grid)
@@ -82,22 +82,22 @@ int main() {
         {X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,X,X,X,X,X,_,_,_,_},
     };
 
-    std::vector<std::vector<int> > maze = maze3;
+    std::vector<std::vector<int> > maze = maze1;
 
-    pp::Map2D<BicycleModelState> map(maze);
-    pp::A_Star<BicycleModelState, BicycleModelState::cNumberThetaCells> AStar(map);
+    pp::Map2D<pp::HolonomicState> map(maze);
+    pp::A_Star<pp::HolonomicState, pp::HolonomicState::cNumberOfStatesPerLocations> AStar(map);
 
-    BicycleModelState start(0.0, 0.0, 0.0);
-    BicycleModelState end(maze.size()-1, maze[0].size()-1, 0.0);
+    pp::HolonomicState start(0, 0, 0);
+    pp::HolonomicState end(maze.size()-1, maze[0].size()-1, 0);
 
-    std::vector<std::vector<std::vector<BicycleModelState> > > pathToGoal;
+    std::vector<std::vector<std::vector<pp::HolonomicState> > > pathToGoal;
 
     std::cout << "Finding path through grid:\n";
     printGrid(maze);
 
     if( AStar.search(maze, pathToGoal, start, end) )
     {
-        std::vector<BicycleModelState> path = AStar.reconstructPath(pathToGoal, start, end);
+        std::vector<pp::HolonomicState> path = AStar.reconstructPath(pathToGoal, start, end);
 
         for (auto state = path.rbegin(); state != path.rend(); ++state)
         {

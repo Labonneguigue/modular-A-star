@@ -6,6 +6,7 @@ add_definitions(-std=c++11)
 
 add_subdirectory(hybrid)
 add_subdirectory(modular_a_star)
+add_subdirectory(holonomic_a_star)
 
 # Executable instantiating the Hybrid A* library
 

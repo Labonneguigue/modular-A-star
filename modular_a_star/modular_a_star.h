@@ -4,51 +4,15 @@
 #include <iostream>
 #include <vector>
 
+#include "map.h"
+
 /** Path Planner namespace
  */
 namespace pp {
 
-/** Interface which defines how the map provided the the A* solver
- * should behave to find a solution
- */
-template<typename stateT>
-class IMap
-{
-public:
-
-    virtual ~IMap() {};
-
-    virtual bool isAccessible(stateT state) const = 0;
-
-};
-
-/** Interface defining what a state type should implement to be
- * acceptable for the A star algorithm
- */
-class IState
-{
-public:
-
-    virtual ~IState() {};
-
-    virtual int getX() const = 0;
-
-    virtual int getY() const = 0;
-
-    virtual int getIteration() const = 0;
-
-    virtual int getHeuristic() const = 0;
-
-    virtual int getInternalState() const = 0;
-
-    virtual bool hasReached(const IState& goal) const = 0;
-
-    virtual bool operator<(const IState& rhs) const = 0;
-};
-
 /** A Star algorithm - Path planner solver
  */
-template<typename stateT, int states>
+template<typename stateT, int nbStates>
 class A_Star
 {
 public:
@@ -76,12 +40,12 @@ public:
     {
         // Tri dimensional vector for storing all spacial positions on the grid
         // as well as the states within each positions that have been visited and closed.
-        mClosed = std::vector<std::vector<std::vector<int> > >( states , std::vector<std::vector<int> >(grid[0].size()
-                                                                       , std::vector<int>(grid.size())));
+        mClosed = std::vector<std::vector<std::vector<int> > >( nbStates , std::vector<std::vector<int> >(grid[0].size()
+                                                                         , std::vector<int>(grid.size())));
 
         // Tri dimensional vector for storing all states to be expanded.
-        pathToGoal = std::vector<std::vector<std::vector<stateT> > >( states , std::vector<std::vector<stateT> >(grid[0].size()
-                                                                             , std::vector<stateT>(grid.size())));
+        pathToGoal = std::vector<std::vector<std::vector<stateT> > >( nbStates , std::vector<std::vector<stateT> >(grid[0].size()
+                                                                               , std::vector<stateT>(grid.size())));
 
         // Set the first state as visited
         mClosed[start.getInternalState()][start.getX()][start.getY()] = 1;

@@ -2,49 +2,21 @@
 #define HYBRID_A_STAR_H
 
 #include <cmath>
-#include "modular_a_star.h"
+
+#include "state.h"
 #include "utl.h"
-
-/**
- * Map class defines the behavior of the underlying physical map
- */
-template<typename stateT>
-class Map : public pp::IMap<stateT>
-{
-public:
-
-    Map(std::vector<std::vector<int> >& grid)
-        : mGrid(grid)
-    {}
-
-    virtual ~Map() {};
-
-    /** Dictates whether a location on the map is accessible or not
-     *
-     * @param[in] state State at potential destination location
-     */
-    virtual bool isAccessible(stateT state) const override
-    {
-        return (state.getX() >= 0 && state.getX() < mGrid.size()
-             && state.getY() >= 0 && state.getY() < mGrid[0].size());
-    }
-
-private:
-
-    std::vector<std::vector<int> >& mGrid; ///< Reference to the grid representing the map itself.
-};
 
 /**
  * Class defining the state of the moving object through the maze.
  */
-class MazeState : public pp::IState
+class BicycleModelState : public pp::IState
 {
 public:
 
-    MazeState( double x = 0.0
-             , double y = 0.0
-             , double theta = 0.0
-             , int g = 0, int f = 0)
+    BicycleModelState( double x = 0.0
+                     , double y = 0.0
+                     , double theta = 0.0
+                     , int g = 0, int f = 0)
         : x(x)
         , y(y)
         , theta(theta)
@@ -76,9 +48,9 @@ public:
      *
      * @param[in] goal Goal state used to determine the heuristic
      */
-    std::vector<MazeState> expand(const IState& goal) const
+    std::vector<BicycleModelState> expand(const IState& goal) const
     {
-        std::vector<MazeState> nextStates;
+        std::vector<BicycleModelState> nextStates;
 
         const int newG = g+1;
 
@@ -92,7 +64,7 @@ public:
             const double newY= y + cSpeed * sin(theta);
             const int newF = heuristic(newX, newY, goal);
 
-            nextStates.emplace_back(MazeState(newX, newY, newTheta, newG, newF));
+            nextStates.emplace_back(BicycleModelState(newX, newY, newTheta, newG, newF));
         }
         return nextStates;
     }
