@@ -66,6 +66,8 @@ public:
             currentState = opened[0];
             opened.erase(opened.begin());
 
+            std::cout << currentState.getX() << " " << currentState.getY() << "\n";
+
             if (currentState.hasReached(goal))
             {
                 std::cout << "Found path to goal in " << closedCount << " expansions.\n";

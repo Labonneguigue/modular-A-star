@@ -29,11 +29,14 @@ int main() {
 
         for (auto state = path.rbegin(); state != path.rend(); ++state)
         {
-            std::cout << "### Step: " << state->getIteration() << "###\n";
+            /*std::cout << "### Step: " << state->getIteration() << "###\n";
             std::cout << "x: " << state->getX() << "   y: " << state->getY() << "\n";
-            std::cout << "theta: " << state->getInternalState() << "\n";
-            maze[state->getX()][state->getY()] = 3;
+            std::cout << "theta: " << state->getInternalState() << "\n";*/
+            maze[state->getX()][state->getY()] = pp::visited;
         }
+
+        maze[start.getX()][start.getY()] = pp::start;
+        maze[end.getX()][end.getY()] = pp::end;
 
         map.printGrid();
     }
