@@ -40,15 +40,15 @@ public:
     {
         // Tri dimensional vector for storing all spacial positions on the grid
         // as well as the states within each positions that have been visited and closed.
-        mClosed = std::vector<std::vector<std::vector<int> > >( nbStates , std::vector<std::vector<int> >(grid[0].size()
-                                                                         , std::vector<int>(grid.size())));
+        mClosed = std::vector<std::vector<std::vector<int> > >( nbStates , std::vector<std::vector<int> >(grid.size()
+                                                                         , std::vector<int>(grid[0].size())));
 
         // Tri dimensional vector for storing all states to be expanded.
-        pathToGoal = std::vector<std::vector<std::vector<stateT> > >( nbStates , std::vector<std::vector<stateT> >(grid[0].size()
-                                                                               , std::vector<stateT>(grid.size())));
+        pathToGoal = std::vector<std::vector<std::vector<stateT> > >( nbStates , std::vector<std::vector<stateT> >(grid.size()
+                                                                               , std::vector<stateT>(grid[0].size())));
 
         // Set the first state as visited
-        mClosed[start.getInternalState()][start.getX()][start.getY()] = 1;
+        mClosed[start.getInternalState()][start.getX()][start.getY()] = visited;
         pathToGoal[start.getInternalState()][start.getX()][start.getY()] = start;
 
         // Count number of expansions
@@ -66,7 +66,7 @@ public:
             currentState = opened[0];
             opened.erase(opened.begin());
 
-            std::cout << currentState.getX() << " " << currentState.getY() << "\n";
+            //std::cout << currentState.getX() << " " << currentState.getY() << "\n";
 
             if (currentState.hasReached(goal))
             {
@@ -84,11 +84,12 @@ public:
                 // If next state is not accessible, it is not added to the next possible states to visit
                 if (!mMap.isAccessible(next)) continue;
 
-                if ( !mClosed[next.getInternalState()][next.getX()][next.getY()]
-                     && !grid[next.getX()][next.getY()])
+                if ( mClosed[next.getInternalState()][next.getX()][next.getY()] == accessibleLocation
+                  && (grid[next.getX()][next.getY()] == accessibleLocation
+                   || grid[next.getX()][next.getY()] == end) )
                 {
                     opened.push_back(next);
-                    ++mClosed[next.getInternalState()][next.getX()][next.getY()];
+                    mClosed[next.getInternalState()][next.getX()][next.getY()] = visited;
                     pathToGoal[next.getInternalState()][next.getX()][next.getY()] = currentState;
                     ++closedCount;
                 }

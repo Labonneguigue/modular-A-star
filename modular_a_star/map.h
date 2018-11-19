@@ -53,11 +53,11 @@ public:
         switch(state)
         {
             case X: return 'X';
-            case pp::visited: return '*';
+            case visited: return '*';
             case start: return '?';
             case end: return '@';
-            default:
-            case pp::_: return '0';
+            case _: return '0';
+            default: return '#';
         }
     }
 

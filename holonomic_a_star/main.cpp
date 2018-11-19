@@ -7,6 +7,8 @@
 #include "state.h"
 #include "map.h"
 
+#define STEPS_DETAILS 0
+
 int main() {
 
     std::vector<std::vector<int> > maze = pp::maze4;
@@ -16,6 +18,9 @@ int main() {
 
     pp::HolonomicState start(0, 0, 0);
     pp::HolonomicState end(maze.size()-1, maze[0].size()-1, 0);
+
+    maze[start.getX()][start.getY()] = pp::start;
+    maze[end.getX()][end.getY()] = pp::end;
 
     std::vector<std::vector<std::vector<pp::HolonomicState> > > pathToGoal;
 
@@ -28,9 +33,11 @@ int main() {
 
     for (auto state = path.rbegin(); state != path.rend(); ++state)
     {
-        /*std::cout << "### Step: " << state->getIteration() << "###\n";
+#if STEPS_DETAILS
+        std::cout << "### Step: " << state->getIteration() << "###\n";
         std::cout << "x: " << state->getX() << "   y: " << state->getY() << "\n";
-        std::cout << "theta: " << state->getInternalState() << "\n";*/
+        std::cout << "theta: " << state->getInternalState() << "\n";
+#endif
         maze[state->getX()][state->getY()] = pp::visited;
     }
 

@@ -7,16 +7,20 @@
 #include "modular_a_star.h"
 #include "map.h"
 
+#define STEPS_DETAILS 0
 
 int main() {
 
-    std::vector<std::vector<int> > maze = pp::maze3;
+    std::vector<std::vector<int> > maze = pp::maze1;
 
     pp::Map2D<BicycleModelState> map(maze);
     pp::A_Star<BicycleModelState, BicycleModelState::cNumberThetaCells> AStar(map);
 
     BicycleModelState start(0.0, 0.0, 0.0);
     BicycleModelState end(maze.size()-1, maze[0].size()-1, 0.0);
+
+    maze[start.getX()][start.getY()] = pp::start;
+    maze[end.getX()][end.getY()] = pp::end;
 
     std::vector<std::vector<std::vector<BicycleModelState> > > pathToGoal;
 
@@ -29,9 +33,11 @@ int main() {
 
         for (auto state = path.rbegin(); state != path.rend(); ++state)
         {
-            /*std::cout << "### Step: " << state->getIteration() << "###\n";
+#if STEPS_DETAILS
+            std::cout << "### Step: " << state->getIteration() << "###\n";
             std::cout << "x: " << state->getX() << "   y: " << state->getY() << "\n";
-            std::cout << "theta: " << state->getInternalState() << "\n";*/
+            std::cout << "theta: " << state->getInternalState() << "\n";
+#endif
             maze[state->getX()][state->getY()] = pp::visited;
         }
 

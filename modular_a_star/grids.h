@@ -8,7 +8,9 @@
 namespace pp {
 
 static const int _ = 0;
+static const int accessibleLocation = _;
 static const int X = 1;
+static const int inaccessibleLocation = X;
 static const int visited = 2;
 static const int start = 3;
 static const int end = 4;
