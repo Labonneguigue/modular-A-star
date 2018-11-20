@@ -13,10 +13,11 @@ class BicycleModelState : public pp::IState
 {
 public:
 
-    BicycleModelState( double x = 0.0
-                     , double y = 0.0
-                     , double theta = 0.0
-                     , int g = 0, int f = 0)
+    BicycleModelState( const double x = 0.0
+                     , const double y = 0.0
+                     , const double theta = 0.0
+                     , const int g = 0
+                     , const int f = 0)
         : x(x)
         , y(y)
         , theta(theta)
@@ -24,7 +25,7 @@ public:
         , f(f)
     {}
 
-    int idx(double position) const { return static_cast<int>(floor(position)); };
+    int idx(const double position) const { return static_cast<int>(floor(position)); };
 
     virtual int getX() const override { return idx(x);};
     virtual int getY() const override { return idx(y);};
@@ -48,10 +49,8 @@ public:
      *
      * @param[in] goal Goal state used to determine the heuristic
      */
-    std::vector<BicycleModelState> expand(const IState& goal) const
+    virtual void expand(std::vector<IState*>& nextStates, const IState& goal) const
     {
-        std::vector<BicycleModelState> nextStates;
-
         const int newG = g+1;
 
         for (double delta = -cMaximumSteering; delta < cMaximumSteering+1.0 ; delta+=cDeltaSteering)
@@ -64,9 +63,8 @@ public:
             const double newY= y + cSpeed * sin(theta);
             const int newF = heuristic(newX, newY, goal);
 
-            nextStates.emplace_back(BicycleModelState(newX, newY, newTheta, newG, newF));
+            nextStates.emplace_back(new BicycleModelState(newX, newY, newTheta, newG, newF));
         }
-        return nextStates;
     }
 
     virtual bool hasReached(const IState& goal) const override
@@ -83,7 +81,7 @@ public:
 
 private:
 
-    int heuristic(int x, int y, const IState& goal) const
+    int heuristic(const int x, const int y, const IState& goal) const
     {
         return (std::abs(goal.getX()-x) + std::abs(goal.getY()-y));
     }
@@ -92,7 +90,7 @@ public:
 
     static constexpr int cNumberThetaCells = 90;
 
-private:
+protected:
 
     static constexpr double cMaximumSteering = 35.0;
     static constexpr double cDeltaSteering = 5.0;

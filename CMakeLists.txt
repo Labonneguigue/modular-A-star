@@ -4,16 +4,13 @@ project(modular_a_star)
 
 add_definitions(-std=c++11)
 
-add_subdirectory(hybrid)
+# Base library
 add_subdirectory(modular_a_star)
-add_subdirectory(holonomic_a_star)
 
-# Executable instantiating the Hybrid A* library
+# Holonomic Robot Motion Model
+add_subdirectory(hybrid_holonomic)
+add_subdirectory(holonomic)
 
-add_executable(hybrid_a_star_example
-    main.cpp
-)
-
-target_link_libraries(hybrid_a_star_example
-    hybrid_a_star
-)
+# Non Holonomic Robot Motion Model
+add_subdirectory(non_holonomic)
+add_subdirectory(hybrid_non_holonomic)

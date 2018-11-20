@@ -3,15 +3,15 @@
 #include <math.h>
 #include <vector>
 
-#include "hybrid_a_star.h"
 #include "modular_a_star.h"
 #include "map.h"
+#include "bicyclemodelstate.h"
 
 #define STEPS_DETAILS 0
 
 int main() {
 
-    std::vector<std::vector<int> > maze = pp::maze1;
+    std::vector<std::vector<int> > maze = pp::maze4;
 
     pp::Map2D<BicycleModelState> map(maze);
     pp::A_Star<BicycleModelState, BicycleModelState::cNumberThetaCells> AStar(map);

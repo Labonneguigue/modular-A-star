@@ -77,12 +77,13 @@ public:
             }
 
             // Expand state to get all next possible states from current one
-            std::vector<stateT> nextStates = currentState.expand(goal);
+            std::vector<stateT*> nextStates;
+            currentState.expand(nextStates, goal);
 
             for(auto& next : nextStates)
             {
                 // If next state is not accessible, it is not added to the next possible states to visit
-                if (!mMap.isAccessible(next)) continue;
+                if (!mMap.isAccessible(*next)) continue;
 
                 if ( mClosed[next.getInternalState()][next.getX()][next.getY()] == accessibleLocation
                   && (grid[next.getX()][next.getY()] == accessibleLocation

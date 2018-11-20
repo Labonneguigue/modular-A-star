@@ -26,6 +26,8 @@ public:
 
     virtual int getInternalState() const = 0;
 
+    virtual void expand(std::vector<IState*>& nextStates, const IState& goal) const = 0;
+
     virtual bool hasReached(const IState& goal) const = 0;
 
     virtual bool operator<(const IState& rhs) const = 0;
@@ -48,6 +50,7 @@ public:
         , g(g)
     {}
 
+    virtual ~HolonomicState() {};
     virtual int getX() const override { return x; };
     virtual int getY() const override { return y; };
     virtual int getIteration() const override { return g;};
@@ -64,14 +67,12 @@ public:
      *
      * @param[in] goal Goal state used to determine the heuristic
      */
-    std::vector<HolonomicState> expand(const IState& goal) const
+    virtual void expand(std::vector<IState*>& nextStates, const IState& goal) const override
     {
-        std::vector<HolonomicState> nextStates;
-        nextStates.emplace_back(HolonomicState(x,y+1, g+1));
-        nextStates.emplace_back(HolonomicState(x-1,y, g+1));
-        nextStates.emplace_back(HolonomicState(x+1,y, g+1));
-        nextStates.emplace_back(HolonomicState(x,y-1, g+1));
-        return nextStates;
+        nextStates.emplace_back(new HolonomicState(x,y+1, g+1));
+        nextStates.emplace_back(new HolonomicState(x-1,y, g+1));
+        nextStates.emplace_back(new HolonomicState(x+1,y, g+1));
+        nextStates.emplace_back(new HolonomicState(x,y-1, g+1));
     }
 
     virtual bool hasReached(const IState& goal) const override
@@ -90,11 +91,11 @@ public:
 
     static constexpr int cNumberOfStatesPerLocations = 1;
 
-private:
+protected:
 
-    int x;
-    int y;
-    int g; // iteration
+    int x; ///< x coordinate of the location on the grid
+    int y; ///< y coordinate of the location on the grid
+    int g; ///< iteration count
 
 };
 

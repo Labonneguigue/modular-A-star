@@ -1,10 +1,10 @@
 # Holonomic Robot path planning using the Modular A* library
 
-add_executable(holonomic_a_star
-    main.cpp
+add_executable(holonomic
+    holonomic.cpp
 )
 
-target_link_libraries(holonomic_a_star
+target_link_libraries(holonomic
     PUBLIC
         modular_a_star
 )
